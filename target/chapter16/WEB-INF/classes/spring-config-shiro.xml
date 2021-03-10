@@ -13,7 +13,7 @@
         <property name="cacheManager" ref="springCacheManager"/>
     </bean>
 
-    <!-- 凭证匹配器 ,就是密码判断器-->
+    <!-- 凭证匹配器 ,里面逻辑根据业务不同是不同的,不是密码对比的地方-->
     <bean id="credentialsMatcher" class="com.github.zhangkaitao.shiro.chapter16.credentials.RetryLimitHashedCredentialsMatcher">
         <constructor-arg ref="cacheManager"/>
         <property name="hashAlgorithmName" value="md5"/>
@@ -105,10 +105,12 @@
     <!-- Shiro的Web过滤器,id和web.xml对应 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
+        <!-- 系统默认就是login.jsp -->
         <property name="loginUrl" value="/login"/>
         <property name="filters">
             <util:map>
-                <!-- 过滤器在这里执行了登录密码的比对,通过这个方法this.executeLogin(request, response)-->
+                <!-- 过滤器在这里执行了登录密码的比对,通过这个方法this.executeLogin(request, response),
+                任何请求都会先到这里来校验用户是否登录,如果没有就会跳转到login.jsp页面-->
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
                 <entry key="sysUser" value-ref="sysUserFilter"/>
             </util:map>

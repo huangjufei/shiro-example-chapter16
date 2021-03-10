@@ -1,3 +1,38 @@
+简介:
+该项目是springMvc架构,数据库使用的是JdbcTemplate.前端使用jsp;
+
+访问:
+shiro 访问默认会先判断用户是否登录,如果没有默认是login.jsp,可以通过下面键值对修改
+authc.loginUrl=login
+
+如果shiro登录成功默认会访问"/"接口
+
+shiro如何流转:
+1,tomcat 的conf文件夹下的web.xml文件中,标识tomcat 启动后默认访问的jsp
+<welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+</welcome-file-list>
+
+2,这时马上就被shiroFilter拦截----->formAuthenticationFilter(任何请求都会先到这里来校验用户是否登录,
+如果没有就会跳转到login.jsp页面),发现没有登录,然后就到了login.jsp页面
+
+3,在web.xml配置文件中 org.springframework.web.filter.DelegatingFilterProxy(启动的时就会进入该类)
+的DelegatingFilterProxy作用是自动到spring容器查找名字为shiroFilter（filter-name）
+的bean并把所有Filter的操作委托给它。然后将ShiroFilter配置到spring容器即可
+
+4,上面相当于从web.xml 的配置关联到spring-config-shiro.xml 文件中的shiroFilter的Bean了
+
+5,如果用户在登录页面点击登录按钮-->formAuthenticationFilter(进行密码比对,如果密码错误是直接回到login方法
+,提示用户密码错误;
+如果密码正确会到SysUserFilter类中,然后来到"/"接口跳转到index.jsp页面(如果shiro登录成功默认会访问"/"接口))
+
+6,然后根据用户得到该用户所拥有的菜单
+
+------------------------
+
+账号:admin密码:123456
 1,分页和搜索支持
 2,超级用户角色不能被付给第二人,
 3,超级用户和超级用户角色不能被查询,最好不用使用admin名

@@ -30,6 +30,11 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
+    /**
+     * 注意这个接口和下面其它接口访问路径不一样,这个就是user,没有其它路径,所以默认到这里
+     * @param model
+     * @return
+     */
     @RequiresPermissions("user:view")
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {

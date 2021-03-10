@@ -58,17 +58,25 @@ public class ResourceServiceImpl implements ResourceService {
         return permissions;
     }
 
+    /**
+     * 获取用户的菜单(通配符匹配(这个很重要),进来的permission和resource不是对应数据库中的同一行数据)
+     * @param permissions
+     * @return
+     */
     @Override
     public List<Resource> findMenus(Set<String> permissions) {
         List<Resource> allResources = findAll();
         List<Resource> menus = new ArrayList<Resource>();
         for(Resource resource : allResources) {
+            //排除parrent_id等于0 的
             if(resource.isRootNode()) {
                 continue;
             }
+            //排序类型不是菜单的
             if(resource.getType() != Resource.ResourceType.menu) {
                 continue;
             }
+            //找出用户的权限,是否和当前的resource相同,如果相同加入menus对象中
             if(!hasPermission(permissions, resource)) {
                 continue;
             }
@@ -77,10 +85,17 @@ public class ResourceServiceImpl implements ResourceService {
         return menus;
     }
 
+    /**
+     * 注意:通配符匹配(这个很重要),进来的permission和resource不是对应数据库中的同一行数据
+     * @param permissions 该用户拥有的权限
+     * @param resource 数据库中全部资源
+     * @return
+     */
     private boolean hasPermission(Set<String> permissions, Resource resource) {
         if(StringUtils.isEmpty(resource.getPermission())) {
             return true;
         }
+        //通配符匹配(这个很重要),进来的permission和resource不是对应数据库中的同一行数据
         for(String permission : permissions) {
             WildcardPermission p1 = new WildcardPermission(permission);
             WildcardPermission p2 = new WildcardPermission(resource.getPermission());

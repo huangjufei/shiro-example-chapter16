@@ -28,13 +28,13 @@ public class IndexController {
 
     /**
      * 登录成功后的默认地址就是它
-     * @param loginUser
-     * @param model
-     * @return
      */
     @RequestMapping("/")
     public String index(@CurrentUser User loginUser, Model model) {
+
+        //根据用户名得到用户表中的role_ids字段,然后去sys_role表中得到resource_ids,然后又去sys_resource中得到permission字段
         Set<String> permissions = userService.findPermissions(loginUser.getUsername());
+        //返回该用户拥有的菜单
         List<Resource> menus = resourceService.findMenus(permissions);
         model.addAttribute("menus", menus);
         return "index";

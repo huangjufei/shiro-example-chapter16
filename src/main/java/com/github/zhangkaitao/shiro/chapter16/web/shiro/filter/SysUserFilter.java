@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * 向request中放入key=user,value=User对象
+ * 向request中存入key=user,value=User对象
  */
 public class SysUserFilter extends PathMatchingFilter {
 

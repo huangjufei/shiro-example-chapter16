@@ -12,11 +12,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 密码错误次数统计到缓存中,大于5次就不让用户登录了,
  * 间隔时间到了才可以,且以最后一次尝试时间为开始时间;
+ * 总体来说这里具体逻辑每个项目都不一样,但大部分时间可以缓存有关
  */
 public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher {
 
     private Cache<String, AtomicInteger> passwordRetryCache;
 
+    /**
+     * 得到密码缓存
+     * @param cacheManager
+     */
     public RetryLimitHashedCredentialsMatcher(CacheManager cacheManager) {
         passwordRetryCache = cacheManager.getCache("passwordRetryCache");
     }
